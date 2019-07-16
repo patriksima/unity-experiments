@@ -7,25 +7,33 @@ namespace Dupa
 {
     public class Inventory : MonoBehaviour
     {
-        private ArrayList items = new ArrayList(8) { null, null, null, null, null, null, null, null };
-        private Slot[] slots;
-        private byte active = 0b1;
+        private readonly ArrayList items = new ArrayList(8) { null, null, null, null, null, null, null, null };
+        private ItemHolder[] holders;
+        //private byte active = 0b1;
 
-        private void Start()
+        private void Awake()
         {
-            slots = GetComponentsInChildren<Slot>();
-
-            AssetManager.Instance.onLoaded += itemTemplates =>
+            // populate quickbar
+            AssetManager.Instance.OnLoaded += assets =>
             {
-                Debug.Log("Inventory::Items: " + itemTemplates.Count);
-
-                for (int i = 0; i < itemTemplates.Count; i++)
+                for (int i = 0; i < assets.Count; i++)
                 {
-                    Add(itemTemplates[i], i);
+                    StackableItem stackable = new StackableItem
+                    {
+                        item = assets[i],
+                        amount = UnityEngine.Random.Range(1, 101)
+                    };
+
+                    AddItem(stackable, UnityEngine.Random.Range(0, 8));
                 }
             };
         }
 
+        private void Start()
+        {
+            holders = GetComponentsInChildren<ItemHolder>();
+        }
+        /*
         private void Update()
         {
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)
@@ -51,17 +59,18 @@ namespace Dupa
                 UpdateSlots();
             }
         }
+        */
 
-        public void Add(Item item, int index)
+        public void AddItem(StackableItem item, int index)
         {
             items[index] = item;
-            UpdateSlots();
+            UpdateUI();
         }
-
+        /*
         public void Del(int index)
         {
             items[index] = null;
-            UpdateSlots();
+            UpdateUI();
         }
 
         public void Swap(int source, int target)
@@ -69,14 +78,15 @@ namespace Dupa
             Item tmp = items[target] as Item;
             items[target] = items[source];
             items[source] = tmp;
-            UpdateSlots();
-        }
+            UpdateUI();
+        }*/
 
-        public void UpdateSlots()
+        public void UpdateUI()
         {
             Debug.Log("UpdateSlots");
-            for (int i = 0; i < slots.Length; i++)
+            for (int i = 0; i < holders.Length; i++)
             {
+                /*
                 if ((active >> i) == 1)
                 {
                     slots[i].SetActive();
@@ -84,7 +94,8 @@ namespace Dupa
                 {
                     slots[i].SetInactive();
                 }
-                slots[i].SetItem(items[i] as Item);
+                */
+                holders[i].SetItem(items[i] as StackableItem);
             }
         }
     }

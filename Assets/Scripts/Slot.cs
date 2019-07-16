@@ -8,6 +8,44 @@ namespace Dupa
 {
     public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        public Color activeColor = Color.white;
+        public Color hoverColor = Color.blue;
+
+        private Color origColor;
+        private Image image;
+        private bool isActive = false;
+
+        private void Start()
+        {
+            image = GetComponent<Image>();
+            origColor = image.color;
+        }
+
+        public void Active(bool status)
+        {
+            isActive = status;
+
+            if (isActive)
+            {
+                image.color = activeColor;
+            }
+            else
+            {
+                image.color = origColor;
+            }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            image.color = hoverColor;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            image.color = origColor;
+        }
+
+        /*
         public Image icon;
         public Image durability;
         public TMPro.TextMeshProUGUI amount;
@@ -19,7 +57,7 @@ namespace Dupa
 
         [HideInInspector]
         public bool isDragged = false;
-
+       
         private void Awake()
         {
             EventManager.OnItemDrop += (item) =>
@@ -31,7 +69,7 @@ namespace Dupa
                 }
             };
         }
-
+        
         private void Start()
         {
             bgImage = GetComponent<Image>();
@@ -61,8 +99,8 @@ namespace Dupa
         {
             isActive = false;
         }
-
-        public Item SetItem(Item newItem)
+       
+        public Item SetItem(StackableItem newItem)
         {
             Item old = item;
 
@@ -132,10 +170,7 @@ namespace Dupa
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            bgImage.color = Color.blue;/*
-            Color tmp = bgImage.color;
-            tmp.a = 0.6f;
-            bgImage.color = tmp;*/
+            bgImage.color = Color.blue;
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -143,5 +178,6 @@ namespace Dupa
             isActive = false;
             bgImage.color = original;
         }
+     */
     }
 }

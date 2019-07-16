@@ -393,10 +393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe71dce57cb98e4295705b2d8bac897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 1247583226477615206}
-  durability: {fileID: 1247583226213141927}
-  amount: {fileID: 1247583225934476972}
-  isDragged: 0
+  hoverColor: {r: 0.5235849, g: 0.5235849, b: 1, a: 1}
 --- !u!1 &1493607344420198716
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,6 +405,7 @@ GameObject:
   - component: {fileID: 4953311103585377254}
   - component: {fileID: 3573556913464435043}
   - component: {fileID: 7076657167449443064}
+  - component: {fileID: 826831488716325341}
   - component: {fileID: 3193487946304979252}
   - component: {fileID: 1465289043317408291}
   m_Layer: 5
@@ -476,6 +474,21 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &826831488716325341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493607344420198716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd4f389c524226d4b8bc5ea61041c385, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  icon: {fileID: 1247583226477615206}
+  durability: {fileID: 1247583226213141927}
+  amount: {fileID: 1247583225934476972}
 --- !u!114 &3193487946304979252
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,7 +20,8 @@ MonoBehaviour:
   - m_GUID: 0a0bff2c41977c1489cb30f251d90d97
     m_Address: Wood
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Items
   - m_GUID: 642b497ffce4cdf449ef9da6f0f0938b
     m_Address: Torch
     m_ReadOnly: 0
@@ -34,7 +35,8 @@ MonoBehaviour:
   - m_GUID: d3c6f1060a722f04eb1dc6fbb53f23a9
     m_Address: Coal
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Items
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 5c2cf28c8f419b84ab9511235740f225, type: 2}
   m_SchemaSet:

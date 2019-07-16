@@ -9,8 +9,10 @@ namespace Dupa
 {
     public class AssetManager : MonoBehaviour
     {
-        public delegate void OnLoaded(List<Item> itemTemplates);
-        public event OnLoaded onLoaded;
+        #region Events
+        public delegate void Loaded(List<Item> itemTemplates);
+        public event Loaded OnLoaded;
+        #endregion
 
         #region Singleton
         private static readonly object iLock = new object();
@@ -33,12 +35,13 @@ namespace Dupa
 
         private void Awake()
         {
-            Debug.Log("AssetManager::Awake");
-
-            //List<object> items = new List<object> { "AK47", "Torch" };
-            Addressables.LoadAssetsAsync<Item>("Items", null).Completed += OnLoadDone;
-            //Addressables.LoadAssetAsync<Item>("AK47").Completed += OnLoadDone;
-
+            // Loading addresable assets by Items label
+            Addressables.LoadAssetsAsync<Item>("Items", null).Completed += obj => {
+                if (obj.Result?.Count > 0)
+                {
+                    OnLoaded?.Invoke(obj.Result as List<Item>);
+                }
+            };
 
             /*
              * // loading configu
@@ -60,18 +63,6 @@ namespace Dupa
                             }
                         };
              */
-        }
-
-        private void OnLoadDone(AsyncOperationHandle<IList<Item>> obj)
-        {
-            Debug.Log("AssetManager::OnLoadDone");
-            Debug.Log($"objs found {obj.Result?.Count}");
-
-            if (obj.Result?.Count > 0)
-                onLoaded?.Invoke(obj.Result as List<Item>);
-
-            // TODO: asi nekde na OnDestroy, jinak to nefunguje
-            //Addressables.Release(obj);
         }
     }
 }
