@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 327e7285dd65e644288510484a4019ac
+  m_SerializeEntries:
+  - m_GUID: 0a0bff2c41977c1489cb30f251d90d97
+    m_Address: Wood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 642b497ffce4cdf449ef9da6f0f0938b
+    m_Address: Torch
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Items
+  - m_GUID: d31a795051fe7834fb5d36b11e5ec2b7
+    m_Address: AK47
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Items
+  - m_GUID: d3c6f1060a722f04eb1dc6fbb53f23a9
+    m_Address: Coal
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 5c2cf28c8f419b84ab9511235740f225, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: b07155019f1e5f1429870226a27f04af, type: 2}
+    - {fileID: 11400000, guid: 8d0d7b6fa492e9640b8ba450b07078c5, type: 2}
