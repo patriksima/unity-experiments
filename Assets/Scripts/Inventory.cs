@@ -18,13 +18,20 @@ namespace Dupa
             {
                 for (int i = 0; i < assets.Count; i++)
                 {
-                    StackableItem stackable = new StackableItem
+                    StackableItem stackable1 = new StackableItem
                     {
                         item = assets[i],
-                        amount = UnityEngine.Random.Range(1, 101)
+                        amount = UnityEngine.Random.Range(1, assets[i].stack)
                     };
 
-                    AddItem(stackable, UnityEngine.Random.Range(0, 8));
+                    StackableItem stackable2 = new StackableItem
+                    {
+                        item = assets[i],
+                        amount = UnityEngine.Random.Range(1, assets[i].stack)
+                    };
+
+                    AddItem(stackable1, UnityEngine.Random.Range(0, 8));
+                    AddItem(stackable2, UnityEngine.Random.Range(0, 8));
                 }
             };
         }

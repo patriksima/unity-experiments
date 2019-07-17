@@ -1,4 +1,6 @@
-﻿namespace Dupa
+﻿using UnityEngine;
+
+namespace Dupa
 {
     public class StackableItem
     {
@@ -9,17 +11,40 @@
 
         public int AddAmount(int add)
         {
+            Debug.Log("StackableItem::AddAmount: add: " + add);
+            Debug.Log("StackableItem::AddAmount: amount: " + amount);
+            Debug.Log("StackableItem::AddAmount: stack: " + Stack);
+
             int remaining = 0;
 
-            amount = amount + add;
-
-            if (amount > Stack)
+            if (add + amount > Stack)
             {
+                remaining = add + amount - Stack;
                 amount = Stack;
-                remaining = add - amount;
+            }
+            else
+            {
+                amount = amount + add;
             }
 
+            Debug.Log("StackableItem::AddAmount: amount new: " + amount);
+            Debug.Log("StackableItem::AddAmount: remaining: " + remaining);
+
             return remaining;
+        }
+
+        public StackableItem Split()
+        {
+            int total = amount;
+
+            amount = (int)(amount / 2);
+
+            StackableItem splitted = new StackableItem
+            {
+                item = item,
+                amount = total - amount
+            };
+            return splitted;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Dupa
         private CanvasGroup group;
         private Slot slot;
         private ItemHolder holder;
-        private GameObject hold;
+        private GameObject placeHolder;
 
         private bool isBeingDragged = false;
 
@@ -101,7 +101,7 @@ namespace Dupa
             group.blocksRaycasts = true;
 
             Drop(eventData.pointerEnter);
-            Destroy(hold);
+            Destroy(placeHolder);
         }
 
         private void Drop(GameObject target)
@@ -115,42 +115,93 @@ namespace Dupa
             ItemHolder targetHolder = target.GetComponentInParent<ItemHolder>();
             StackableItem targetItem = targetHolder.GetItem();
 
-            // swap items
-            if (hold == null)
+            // if target item is same type (add)
+            if (targetItem != null && item.item.name == targetItem.item.name)
             {
-                holder.SetItem(targetItem);
-                targetHolder.SetItem(item);
+                if (placeHolder == null)
+                {
+                    // Add amount
+                    int remaining = targetItem.AddAmount(item.amount);
+
+                    // Remaining back
+                    item.amount = remaining;
+
+                    targetHolder.SetItem(targetItem);
+
+                    if (remaining > 0)
+                    {
+                        holder.SetItem(item);
+                    }
+                    else
+                    {
+                        // nothing left
+                        item = null;
+                        holder.SetItem(null);
+                    }
+                }
+                else
+                {
+                    // Add amount
+                    int remaining = targetItem.AddAmount(item.amount);
+
+                    // Remaining add to placeholder (stand still on place)
+                    StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
+                    holdItem.amount += remaining;
+
+                    targetHolder.SetItem(targetItem);
+
+                    if (holdItem.amount > 0)
+                    {
+                        holder.SetItem(holdItem);
+                    }
+                    else
+                    {
+                        // nothing left
+                        item = null;
+                        holder.SetItem(null);
+                    }
+                }
             }
             else
             {
-                if (targetItem == null)
+                // swap items
+                if (placeHolder == null)
                 {
-                    holder.SetItem(hold.GetComponent<ItemHolder>().GetItem());
+                    holder.SetItem(targetItem);
                     targetHolder.SetItem(item);
                 }
                 else
                 {
-                    // drop is invalid, revert amount back
-                    StackableItem holdItem = hold.GetComponent<ItemHolder>().GetItem();
-                    item.amount += holdItem.amount;
-                    holder.SetItem(item);
+                    if (targetItem == null)
+                    {
+                        holder.SetItem(placeHolder.GetComponent<ItemHolder>().GetItem());
+                        targetHolder.SetItem(item);
+                    }
+                    else
+                    {
+                        // drop is invalid, revert amount back
+                        StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
+                        item.amount += holdItem.amount;
+                        holder.SetItem(item);
+                    }
                 }
             }
         }
 
         private void Split()
         {
-            hold = Instantiate(gameObject, transform.parent);
+            // dont split if amount under 2, drag as normal
+            if (item.amount < 2) return;
 
-            int amount = item.amount;
-            item.amount = (int)(amount / 2);
+            // split stack to half
+            StackableItem splitted = item.Split();
+
+            // set placeholder
+            placeHolder = Instantiate(gameObject, transform.parent);
+            placeHolder.GetComponent<ItemHolder>().SetItem(splitted);
+
+            //set half to draggable item
             holder.SetItem(item);
-
-            StackableItem n = new StackableItem();
-            n.item = item.item;
-            n.amount = amount - item.amount;
-
-            hold.GetComponent<ItemHolder>().SetItem(n);
         }
 
         /*
