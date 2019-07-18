@@ -11,6 +11,7 @@ namespace Dupa
     {
         private StackableItem item;
 
+        private Color original;
         private Transform parent;
         private Canvas canvas;
         private CanvasGroup group;
@@ -27,6 +28,8 @@ namespace Dupa
             canvas = GetComponentInParent<Canvas>();
             group = GetComponent<CanvasGroup>();
             parent = transform.parent;
+
+            original = GetComponent<Image>().color;
         }
 
 #if UNITY_EDITOR 
@@ -43,6 +46,10 @@ namespace Dupa
                 {
                     GetComponent<Image>().color = Color.red;
                 }
+            }
+            else
+            {
+                GetComponent<Image>().color = original;
             }
         }
 #endif
@@ -106,11 +113,29 @@ namespace Dupa
 
         private void Drop(GameObject target)
         {
-            if (target == null) return;
+            if (target == null)
+            {
+                if (placeHolder != null)
+                {
+                    // invalid middle drop, revert amount back
+                    StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
+                    item.Amount += holdItem.Amount;
+                }
+                return;
+            }
 
             Slot targetSlot = target.GetComponentInParent<Slot>();
 
-            if (targetSlot == slot) return;
+            if (targetSlot == slot)
+            {
+                if (placeHolder != null)
+                {
+                    // middle drop back to position, revert amount back
+                    StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
+                    item.Amount += holdItem.Amount;
+                }
+                return;
+            }
 
             ItemHolder targetHolder = target.GetComponentInParent<ItemHolder>();
             StackableItem targetItem = targetHolder.GetItem();
@@ -118,14 +143,16 @@ namespace Dupa
             // if target item is same type (add)
             if (targetItem != null && item.item.name == targetItem.item.name)
             {
+               
                 if (placeHolder == null)
                 {
                     // Add amount
-                    int remaining = targetItem.AddAmount(item.amount);
+                    int remaining = targetItem.AddAmount(item.Amount);
 
                     // Remaining back
-                    item.amount = remaining;
+                    item.Amount = remaining;
 
+                    
                     targetHolder.SetItem(targetItem);
 
                     if (remaining > 0)
@@ -141,16 +168,18 @@ namespace Dupa
                 }
                 else
                 {
+                    
                     // Add amount
-                    int remaining = targetItem.AddAmount(item.amount);
+                    int remaining = targetItem.AddAmount(item.Amount);
 
                     // Remaining add to placeholder (stand still on place)
                     StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
-                    holdItem.amount += remaining;
+                    holdItem.Amount += remaining;
 
+                    
                     targetHolder.SetItem(targetItem);
 
-                    if (holdItem.amount > 0)
+                    if (holdItem.Amount > 0)
                     {
                         holder.SetItem(holdItem);
                     }
@@ -164,6 +193,7 @@ namespace Dupa
             }
             else
             {
+                
                 // swap items
                 if (placeHolder == null)
                 {
@@ -181,7 +211,7 @@ namespace Dupa
                     {
                         // drop is invalid, revert amount back
                         StackableItem holdItem = placeHolder.GetComponent<ItemHolder>().GetItem();
-                        item.amount += holdItem.amount;
+                        item.Amount += holdItem.Amount;
                         holder.SetItem(item);
                     }
                 }
@@ -191,7 +221,7 @@ namespace Dupa
         private void Split()
         {
             // dont split if amount under 2, drag as normal
-            if (item.amount < 2) return;
+            if (item.Amount < 2) return;
 
             // split stack to half
             StackableItem splitted = item.Split();
@@ -203,143 +233,5 @@ namespace Dupa
             //set half to draggable item
             holder.SetItem(item);
         }
-
-        /*
-        private Canvas canvas;
-        private CanvasGroup canvasGroup;
-        private Inventory inventory;
-        private Slot slot;
-        private bool isBeingDragged = false;
-        private Image image;
-        private RectTransform rectTransform;
-        private Color color;
-        private GameObject half;
-
-        private bool isDraggable = false;
-
-        private void Start()
-        {
-            rectTransform = GetComponent<RectTransform>();
-            canvas = GetComponentInParent<Canvas>();
-            canvasGroup = GetComponent<CanvasGroup>();
-            inventory = GetComponentInParent<Inventory>();
-            slot = GetComponentInParent<Slot>();
-            image = GetComponent<Image>();
-            color = image.color;
-        }
-
-        private void Update()
-        {
-            if (isBeingDragged)
-            {
-                // Is mouse over UI?
-                if (EventSystem.current.IsPointerOverGameObject())
-                {
-                    image.color = Color.green;
-                }
-                else
-                {
-                    image.color = Color.red;
-                }
-            }
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (!isDraggable) return;
-
-            slot.isDragged = true;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                eventData.position, canvas.worldCamera,
-                out Vector2 movePos);
-
-            transform.position = canvas.transform.TransformPoint(movePos);
-            
-        }
-
-        public void UnderMouseObject(PointerEventData eventData) {
-        
-            List<RaycastResult> results = new List<RaycastResult>();
-            canvas.GetComponent<GraphicRaycaster>().Raycast(eventData, results);
-            foreach (RaycastResult result in results)
-            {
-                Debug.Log("Hit " + result.gameObject.name);
-            }
-            
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-        {
-            if (!isDraggable) return;
-
-            isBeingDragged = true;
-            canvasGroup.blocksRaycasts = false;
-
-
-            if (eventData.button == PointerEventData.InputButton.Middle)
-            {
-                half = Instantiate(gameObject, transform.parent);
-                Item old = slot.GetItem();
-                int amount = old.amount;
-                old.amount = (int)(old.amount / 2);
-                slot.SetItem(old);
-
-                old.amount = 66;
-                half.GetComponentInParent<Slot>().SetItem(old);
-            }
-
-            transform.SetParent(canvas.transform);
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            if (!isDraggable) return;
-
-            slot.isDragged = false;
-            isBeingDragged = false;
-
-            image.color = color;
-
-            transform.SetParent(slot.transform);
-            transform.localPosition = Vector3.zero;
-
-            canvasGroup.blocksRaycasts = true;
-
-            // asi lokace kde to upustilo
-            GameObject target = eventData.pointerEnter;
-            Slot targetSlot = target?.GetComponentInParent<Slot>();
-
-            if (targetSlot != null && slot != targetSlot)
-            {
-                Item old = targetSlot.SetItem(slot.GetItem());
-                if (old == null)
-                {
-                    slot.RemoveItem();
-                }
-                else
-                {
-                    slot.SetItem(old);
-                }
-            }
-
-            Destroy(half);
-
-            //EventManager.TriggerItemDrop(slot.GetItem());
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            //print("ItemDragHandler::OnPointerExit:" + eventData);
-            slot.SetInactive();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            //print("ItemDragHandler::OnPointerEnter:" + eventData);
-            slot.SetActive();
-        }
-    */
     }
 }

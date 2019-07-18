@@ -14,31 +14,41 @@ namespace Dupa
         private void Awake()
         {
             // populate quickbar
-            AssetManager.Instance.OnLoaded += assets =>
-            {
-                for (int i = 0; i < assets.Count; i++)
-                {
-                    StackableItem stackable1 = new StackableItem
-                    {
-                        item = assets[i],
-                        amount = UnityEngine.Random.Range(1, assets[i].stack)
-                    };
+            AssetManager.Instance.OnLoaded += Populate;
 
-                    StackableItem stackable2 = new StackableItem
-                    {
-                        item = assets[i],
-                        amount = UnityEngine.Random.Range(1, assets[i].stack)
-                    };
-
-                    AddItem(stackable1, UnityEngine.Random.Range(0, 8));
-                    AddItem(stackable2, UnityEngine.Random.Range(0, 8));
-                }
-            };
+            // if any item changed, update ui
+            StackableItem.OnItemChanged += itemChanged => UpdateUI();
         }
 
         private void Start()
         {
             holders = GetComponentsInChildren<ItemHolder>();
+        }
+
+        private void Populate(List<Item> assets)
+        {
+            for (int i = 0; i < assets.Count; i++)
+            {
+                StackableItem stackable1 = new StackableItem
+                {
+                    item = assets[i],
+                    Amount = UnityEngine.Random.Range(1, assets[i].stack)
+                };
+
+                StackableItem stackable2 = new StackableItem
+                {
+                    item = assets[i],
+                    Amount = UnityEngine.Random.Range(1, assets[i].stack)
+                };
+
+                int i1 = UnityEngine.Random.Range(0, 8);
+                int i2 = UnityEngine.Random.Range(0, 8);
+
+                holders[i1].SetItem(stackable1);
+                holders[i2].SetItem(stackable2);
+            }
+
+            UpdateUI();
         }
         /*
         private void Update()
@@ -63,46 +73,25 @@ namespace Dupa
                     active = Convert.ToByte(temp);
                 }
                 Debug.Log("Active: " +Convert.ToString(active, 2));
-                UpdateSlots();
+                UpdateUI();
             }
         }
         */
 
-        public void AddItem(StackableItem item, int index)
-        {
-            items[index] = item;
-            UpdateUI();
-        }
-        /*
-        public void Del(int index)
-        {
-            items[index] = null;
-            UpdateUI();
-        }
-
-        public void Swap(int source, int target)
-        {
-            Item tmp = items[target] as Item;
-            items[target] = items[source];
-            items[source] = tmp;
-            UpdateUI();
-        }*/
-
         public void UpdateUI()
         {
-            Debug.Log("UpdateSlots");
             for (int i = 0; i < holders.Length; i++)
             {
                 /*
                 if ((active >> i) == 1)
                 {
-                    slots[i].SetActive();
+                    holders[i].SetActive();
                 } else
                 {
-                    slots[i].SetInactive();
+                    holders[i].SetInactive();
                 }
                 */
-                holders[i].SetItem(items[i] as StackableItem);
+                holders[i].UpdateUI();
             }
         }
     }

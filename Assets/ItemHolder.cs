@@ -13,8 +13,10 @@ namespace Dupa
         public TMPro.TextMeshProUGUI amount;
         #endregion
 
+        #region Private variables
         private Color transparent = new Color(255f, 255f, 255f, 0f);
         private StackableItem item;
+        #endregion
 
         public void SetItem(StackableItem newItem)
         {
@@ -27,9 +29,9 @@ namespace Dupa
             return item;
         }
 
-        private void UpdateUI()
+        public void UpdateUI()
         {
-            if (item == null)
+            if (item == null || item.Amount <= 0)
             {
                 icon.sprite = null;
                 icon.color = transparent;
@@ -38,7 +40,8 @@ namespace Dupa
                 durability.enabled = false;
                 amount.text = "";
                 amount.enabled = false;
-            } else
+            }
+            else
             {
                 if (item.item.icon == null)
                 {
@@ -53,9 +56,9 @@ namespace Dupa
                     icon.color = Color.white;
                 }
 
-                durability.fillAmount = item.durability;
+                durability.fillAmount = item.Durability;
 
-                amount.text = item.amount.ToString();
+                amount.text = item.Amount.ToString();
                 amount.enabled = true;
             }
         }

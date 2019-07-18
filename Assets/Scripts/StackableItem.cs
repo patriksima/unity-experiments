@@ -4,47 +4,76 @@ namespace Dupa
 {
     public class StackableItem
     {
+        #region Public handlers
+        public delegate void ItemChangedHandler(StackableItem item);
+        public static event ItemChangedHandler OnItemChanged;
+        #endregion
+
+        #region Public variables
         public Item item;
         public int Stack { get { return item.stack; } }
-        public int amount = 0;
-        public float durability = 1f;
+        public int Amount
+        {
+            get
+            {
+                return amount;
+            }
+            set
+            {
+                amount = value;
+                OnItemChanged?.Invoke(this);
+            }
+        }
+        public float Durability
+        {
+            get
+            {
+                return durability;
+            }
+            set
+            {
+                durability = value;
+                OnItemChanged?.Invoke(this);
+            }
+        }
+        #endregion
 
+        #region Private variables
+        private int amount = 0;
+        private float durability = 1f;
+        #endregion
+
+        #region Public methods
         public int AddAmount(int add)
         {
-            Debug.Log("StackableItem::AddAmount: add: " + add);
-            Debug.Log("StackableItem::AddAmount: amount: " + amount);
-            Debug.Log("StackableItem::AddAmount: stack: " + Stack);
-
             int remaining = 0;
 
-            if (add + amount > Stack)
+            if (add + Amount > Stack)
             {
-                remaining = add + amount - Stack;
-                amount = Stack;
+                remaining = add + Amount - Stack;
+                Amount = Stack;
             }
             else
             {
-                amount = amount + add;
+                Amount = Amount + add;
             }
-
-            Debug.Log("StackableItem::AddAmount: amount new: " + amount);
-            Debug.Log("StackableItem::AddAmount: remaining: " + remaining);
 
             return remaining;
         }
 
         public StackableItem Split()
         {
-            int total = amount;
+            int total = Amount;
 
-            amount = (int)(amount / 2);
+            Amount = (int)(Amount / 2);
 
             StackableItem splitted = new StackableItem
             {
                 item = item,
-                amount = total - amount
+                Amount = total - Amount
             };
             return splitted;
         }
+        #endregion
     }
 }
