@@ -1,18 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 
 namespace Dupa
 {
     public class EventManager : MonoBehaviour
     {
-        public delegate void ItemDrop(Item item);
-        public static event ItemDrop OnItemDrop;
+        public delegate void EventHandler(GameObject gameObj);
+        public static event EventHandler OnEvent;
 
-        public static void TriggerItemDrop(Item item)
+        public static void TriggerEvent(GameObject gameObj)
         {
-            OnItemDrop?.Invoke(item);
+            OnEvent?.Invoke(gameObj);
         }
     }
 }

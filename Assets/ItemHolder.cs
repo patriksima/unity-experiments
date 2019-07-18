@@ -31,33 +31,50 @@ namespace Dupa
 
         public void UpdateUI()
         {
-            if (item == null || item.Amount <= 0)
+            UpdateIcon();
+            UpdateDurability();
+            UpdateAmount();
+        }
+
+        private void UpdateIcon()
+        {
+            if (item == null || item.item.icon == null)
             {
                 icon.sprite = null;
                 icon.color = transparent;
                 icon.enabled = false;
+            }
+            else
+            {
+                icon.sprite = item.item.icon;
+                icon.enabled = true;
+                icon.color = Color.white;
+            }
+        }
+
+        private void UpdateDurability()
+        {
+            if (item == null)
+            {
                 durability.fillAmount = 0f;
                 durability.enabled = false;
+            }
+            else
+            {
+                durability.fillAmount = item.Durability;
+                durability.enabled = true;
+            }
+        }
+
+        private void UpdateAmount()
+        {
+            if (item == null)
+            {
                 amount.text = "";
                 amount.enabled = false;
             }
             else
             {
-                if (item.item.icon == null)
-                {
-                    icon.sprite = null;
-                    icon.color = transparent;
-                    icon.enabled = false;
-                }
-                else
-                {
-                    icon.sprite = item.item.icon;
-                    icon.enabled = true;
-                    icon.color = Color.white;
-                }
-
-                durability.fillAmount = item.Durability;
-
                 amount.text = item.Amount.ToString();
                 amount.enabled = true;
             }
