@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -393,6 +393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe71dce57cb98e4295705b2d8bac897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0.5235849, g: 0.5235849, b: 1, a: 1}
 --- !u!1 &1493607344420198716
 GameObject:
