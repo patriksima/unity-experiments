@@ -9,6 +9,9 @@ namespace Dupa
 {
     public class ItemDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler/*, IPointerEnterHandler, IPointerExitHandler*/
     {
+        public AudioClip pickup;
+        public AudioClip putdown;
+
         private StackableItem item;
 
         private Color original;
@@ -80,6 +83,8 @@ namespace Dupa
 
             // set parent to Canvas (drag above all elements)
             transform.SetParent(canvas.transform);
+
+            SoundManager.Instance.PlayOneShot(pickup);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -110,6 +115,8 @@ namespace Dupa
 
             Drop(eventData.pointerEnter);
             Destroy(placeHolder);
+
+            SoundManager.Instance.PlayOneShot(putdown);
         }
 
         private void Drop(GameObject target)
